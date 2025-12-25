@@ -84,9 +84,9 @@ model Order {
   id         Int         @id @default(autoincrement())
   user       User        @relation(fields: [userId], references: [id])
   userId     Int
-  orderItems OrderItem[]
   total      Float
   status     STATUS      @default(PENDING)
+  orderItems OrderItem[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
