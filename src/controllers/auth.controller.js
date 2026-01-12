@@ -3,6 +3,7 @@ import prisma from "../config/prisma.js";
 import { generateAccessToken } from "../utils/jwt.js";
 import { compareHash, hashPassword } from "../utils/hashPassword.js";
 import { ROLES } from "../../generated/prisma/client.ts";
+import { toPublicUser } from "../utils/toPublic.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -35,12 +36,12 @@ export const signUp = async (req, res) => {
 
     res.status(201).json({
       message: "User created successfully.",
-      user,
+      user: toPublicUser(user),
       token,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating user",
+      message: "Server error in creating user",
       error: error.message,
     });
   }
@@ -81,13 +82,14 @@ export const login = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Login successfully.",
-      user,
+      message: "User login successfully.",
+      user: toPublicUser(user),
       token,
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Server error in creating user",
+      error: error.message,
     });
   }
 };
@@ -96,7 +98,6 @@ export const logout = async (req, res) => {
   try {
     const user = await prisma.user.findFirst({
       where: { id: req.user.id },
-      select: { tokens: true },
     });
 
     const updatedTokens = (user.tokens || []).filter((t) => t !== req.token);
@@ -109,12 +110,31 @@ export const logout = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Logout successfully.",
-      user,
+      message: "User logout successfully.",
+      user: toPublicUser(user),
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Server error in creating user",
+      error: error.message,
+    });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+    });
+
+    res.json({
+      message: "User fetch successfully",
+      user: toPublicUser(user),
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error in creating user",
+      error: error.message,
     });
   }
 };
