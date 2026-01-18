@@ -35,6 +35,7 @@ export const createProduct = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
+      message: 'Server error in creating product',
       error: error.message,
     });
   }
@@ -82,8 +83,8 @@ export const getProducts = async (req, res) => {
     const pageNumber = Number(page);
     const pageSize = Number(limit);
 
-    const skip = (pageNumber - 1) * pageSize;
     const take = pageSize;
+    const skip = (pageNumber - 1) * pageSize;
 
     const products = await prisma.product.findMany({
       where,

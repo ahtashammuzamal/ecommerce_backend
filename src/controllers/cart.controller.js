@@ -77,15 +77,30 @@ export const addToCart = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   try {
-    const { cartItem_id } = req.body;
-    if (!cartItem_id) {
+    const { id } = req.body;
+    if (!id) {
       return res.status(400).json({
         message: "cartItem id missing",
       });
     }
 
-    const cartItem = await prisma.cartItem.delete({
-      where: { id: cartItem_id },
+    const cartItem = await prisma.cartItem.findFirst({
+      where: {
+        id,
+        cart: {
+          userId: req.user.id,
+        },
+      },
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item does not exist.",
+      });
+    }
+
+    await prisma.cartItem.delete({
+      where: { id },
     });
 
     res.json({
@@ -95,23 +110,23 @@ export const removeFromCart = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Internal system error",
-      message: error.message,
+      error: error.message,
     });
   }
 };
 
 export const updateCart = async (req, res) => {
   try {
-    const { cartItem_id, action } = req.body;
+    const { id, action } = req.body;
 
-    if (!cartItem_id || !action) {
+    if (!id || !action) {
       return res.status(400).json({
         message: "cartItem_id and action is required",
       });
     }
 
-    const cartItem = await prisma.cartItem.findUnique({
-      where: { id: cartItem_id },
+    const cartItem = await prisma.cartItem.findFirst({
+      where: { id, cart: { userId: req.user.id } },
     });
 
     if (!cartItem) {
@@ -124,21 +139,21 @@ export const updateCart = async (req, res) => {
 
     if (action === "increment") {
       await prisma.cartItem.update({
-        where: { id: cartItem_id },
+        where: { id },
         data: {
           quantity: { increment: 1 },
         },
       });
     } else if (action === "decrement" && quantity > 1) {
       await prisma.cartItem.update({
-        where: { id: cartItem_id },
+        where: { id },
         data: {
           quantity: { decrement: 1 },
         },
       });
     } else if (action === "decrement" && quantity === 1) {
       await prisma.cartItem.delete({
-        where: { id: cartItem_id },
+        where: { id },
       });
     } else {
       return res.status(400).json({
@@ -152,13 +167,13 @@ export const updateCart = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Cart updates successfully",
-      updatedCart: cart,
+      message: "Cart updated successfully",
+      cart,
     });
   } catch (error) {
     res.status(500).json({
       message: "Internal system error",
-      message: error.message,
+      error: error.message,
     });
   }
 };

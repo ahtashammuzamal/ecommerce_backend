@@ -11,8 +11,6 @@ import upload from "../config/multer.js";
 
 const router = new express.Router();
 
-router.get("/", getProducts);
-router.get("/:id", getSingleProduct)
 router.post(
   "/create",
   verifyToken,
@@ -20,6 +18,8 @@ router.post(
   upload.array("images", 5),
   createProduct
 );
+router.get("/", getProducts);
+router.get("/:id", getSingleProduct)
 router.patch("/:id", verifyToken, authorizeAdmin, updateProduct);
 router.delete("/:id", verifyToken, authorizeAdmin, deleteProduct);
 
