@@ -11,8 +11,8 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 const router = new express.Router();
 
 router.get("/", verifyToken, getCart);
-router.post("/add", verifyToken, addToCart);
-router.delete("/remove", verifyToken, removeFromCart);
+router.post("/add/:id", verifyToken, addToCart);
+router.delete("/:id", verifyToken, removeFromCart);
 router.patch("/update", verifyToken, updateCart);
 router.post("/clear", verifyToken, clearCart);
 

@@ -13,7 +13,7 @@ export const createProduct = async (req, res) => {
         req.files.map(async (file) => {
           const cloudRes = await uploadBuffer(file.buffer);
           return cloudRes.secure_url;
-        })
+        }),
       );
       imageUrls = uploads;
     }
@@ -35,7 +35,7 @@ export const createProduct = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Server error in creating product',
+      message: "Server error in creating product",
       error: error.message,
     });
   }
@@ -66,9 +66,13 @@ export const getProducts = async (req, res) => {
     const categoryFilter = category ? { category: { slug: category } } : {};
 
     const priceFilter = {
-      ...(minPrice && { price: { gte: Number(minPrice) } }),
-      ...(maxPrice && { price: { lte: Number(maxPrice) } }),
+      price: {
+        ...(minPrice && { gte: Number(minPrice) }),
+        ...(maxPrice && { lte: Number(maxPrice) }),
+      },
     };
+
+    console.log(priceFilter);
 
     const where = {
       ...searchFilter,
@@ -99,7 +103,7 @@ export const getProducts = async (req, res) => {
     const total = await prisma.product.count({ where });
 
     res.json({
-      data: products,
+      products,
       meta: {
         total,
         page: pageNumber,

@@ -4,7 +4,9 @@ export const getCart = async (req, res) => {
   try {
     const cart = await prisma.cart.findUnique({
       where: { userId: req.user.id },
-      include: { cartItems: true },
+      include: {
+        cartItems: { include: { product: { include: { category: true } } } },
+      },
     });
 
     if (!cart) {
@@ -42,7 +44,7 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    const { productId } = req.body;
+    const { productId } = parseInt(req.params.productId);
 
     if (!productId) {
       return res.status(400).json({
@@ -77,7 +79,7 @@ export const addToCart = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   try {
-    const { id } = req.body;
+    const id = parseInt(req.params.id);
     if (!id) {
       return res.status(400).json({
         message: "cartItem id missing",

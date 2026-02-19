@@ -5,7 +5,7 @@ import { compareHash, hashPassword } from "../utils/hashPassword.js";
 import { ROLES } from "../../generated/prisma/client.ts";
 import { toPublicUser } from "../utils/toPublic.js";
 
-export const signUp = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 

@@ -2,7 +2,14 @@ import prisma from "../config/prisma.js";
 import { STATUS } from "../../generated/prisma/client.ts";
 
 export const createOrder = async (req, res) => {
+  const { shippingAddress } = req.body;
   try {
+    if (!shippingAddress) {
+      return res.status(400).json({
+        message: "Shipping address is required for order",
+      });
+    }
+
     const cart = await prisma.cart.findUnique({
       where: { userId: req.user.id },
       include: {
@@ -28,6 +35,7 @@ export const createOrder = async (req, res) => {
         data: {
           userId: cart.userId,
           total,
+          shippingAddress,
         },
       });
 
@@ -48,8 +56,6 @@ export const createOrder = async (req, res) => {
 
       return createdOrder;
     });
-
-    console.log(createOrder);
 
     const fullOrder = await prisma.order.findUnique({
       where: { id: order.id },
@@ -123,7 +129,6 @@ export const updateOrderStatus = async (req, res) => {
       CANCELLED: [],
     };
 
-
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -150,7 +155,7 @@ export const updateOrderStatus = async (req, res) => {
         for (const item of order.orderItems) {
           if (item.product.stock < item.quantity) {
             throw new Error(
-              `Insufficient stock for product: ${item.product.name}`
+              `Insufficient stock for product: ${item.product.name}`,
             );
           }
 

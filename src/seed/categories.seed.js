@@ -13,7 +13,7 @@ async function run() {
 
   // Top-level categories
   const topCategories = [
-    {
+    { 
       name: "Electronics",
       children: ["Mobiles", "Laptops", "Cameras"],
     },
