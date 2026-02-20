@@ -45,7 +45,7 @@ export const getProducts = async (req, res) => {
   try {
     const {
       search,
-      category,
+      categories,
       minPrice,
       maxPrice,
       sortBy = "createdAt",
@@ -63,7 +63,18 @@ export const getProducts = async (req, res) => {
         }
       : {};
 
-    const categoryFilter = category ? { category: { slug: category } } : {};
+    let categoryFilter;
+
+    if (categories) {
+      const categoryArray = categories.split(",");
+      categoryFilter = {
+        category: {
+          slug: {
+            in: categoryArray,
+          },
+        },
+      };
+    }
 
     const priceFilter = {
       price: {
