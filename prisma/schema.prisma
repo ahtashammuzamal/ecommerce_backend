@@ -53,9 +53,7 @@ model Category {
   id        Int        @id @default(autoincrement())
   name      String
   slug      String     @unique
-  parentId  Int?
-  parent    Category?  @relation("CategoryParent", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryParent")
+  imageURL  String?
   products  Product[]
   createdAT DateTime   @default(now())
 }

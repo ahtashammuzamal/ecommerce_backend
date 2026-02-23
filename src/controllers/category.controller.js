@@ -2,7 +2,9 @@ import prisma from "../config/prisma.js";
 
 export const getCategories = async (req, res) => {
   try {
-    const categories = await prisma.category.findMany({});
+    const categories = await prisma.category.findMany({
+      include: { products: true },
+    });
 
     res.status(200).json({
       categories,

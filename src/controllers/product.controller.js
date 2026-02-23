@@ -141,6 +141,7 @@ export const getSingleProduct = async (req, res) => {
     }
     const product = await prisma.product.findUnique({
       where: { id },
+      include: { category: true },
     });
 
     if (!product) {
@@ -150,7 +151,7 @@ export const getSingleProduct = async (req, res) => {
     }
 
     res.status(200).json({
-      success: true,
+      message: "Products fetch sucessfully",
       product,
     });
   } catch (error) {

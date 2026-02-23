@@ -9,6 +9,11 @@ export const getCart = async (req, res) => {
       },
     });
 
+    let totalCartItems = 0;
+    cart.cartItems.forEach((item) => {
+      totalCartItems += item.quantity;
+    });
+
     if (!cart) {
       return res.status(404).json({
         message: "Cart does not exist",
@@ -17,6 +22,7 @@ export const getCart = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      totalCartItems,
       cart,
     });
   } catch (error) {
@@ -44,11 +50,11 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    const { productId } = parseInt(req.params.productId);
+    const {productId, quantity } = req.body;
 
-    if (!productId) {
+    if (!productId || !quantity || quantity < 1) {
       return res.status(400).json({
-        message: "productId required",
+        message: "productId and valid quantity required",
       });
     }
 
@@ -56,11 +62,11 @@ export const addToCart = async (req, res) => {
       where: {
         cartId_productId: { cartId: userCart.id, productId: productId },
       },
-      update: { quantity: { increment: 1 } },
+      update: { quantity: { increment: quantity } },
       create: {
         cartId: userCart.id,
         productId,
-        quantity: 1,
+        quantity,
       },
     });
 
