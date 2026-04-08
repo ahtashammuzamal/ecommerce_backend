@@ -19,7 +19,6 @@ export const createOrder = async (req, res) => {
       },
     });
 
-
     if (!cart || cart.cartItems.length === 0) {
       return res.status(400).json({
         message: "Cart is empty",
@@ -93,6 +92,43 @@ export const getOrders = async (req, res) => {
 
     res.json({
       orders,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const [orders, totalOrders, statusCounts] = await prisma.$transaction([
+      prisma.order.findMany({ include: { user: true } }),
+
+      prisma.order.count(),
+
+      prisma.order.groupBy({
+        by: "status",
+        _count: { status: true },
+      }),
+    ]);
+
+    const formattedStatus = {
+      PENDING: 0,
+      PAID: 0,
+      SHIPPED: 0,
+      DELIVERED: 0,
+      CANCELLED: 0,
+    };
+
+    statusCounts.forEach(
+      (item) => (formattedStatus[item.status] = item._count.status),
+    );
+
+    res.json({
+      orders,
+      totalOrders,
+      ...formattedStatus,
     });
   } catch (error) {
     return res.status(500).json({

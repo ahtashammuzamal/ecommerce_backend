@@ -16,11 +16,19 @@ router.post(
   verifyToken,
   authorizeAdmin,
   upload.array("images", 5),
-  createProduct
+  createProduct,
 );
 router.get("/", getProducts);
-router.get("/:id", getSingleProduct)
-router.patch("/:id", verifyToken, authorizeAdmin, updateProduct);
+router.get("/:id", getSingleProduct);
+
+router.patch(
+  "/:id",
+  verifyToken,
+  authorizeAdmin,
+  upload.array("images", 5),
+  updateProduct,
+);
+
 router.delete("/:id", verifyToken, authorizeAdmin, deleteProduct);
 
 export default router;

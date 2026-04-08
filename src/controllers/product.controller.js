@@ -166,10 +166,16 @@ export const updateProduct = async (req, res) => {
   const allowedUpdates = [
     "title",
     "description",
+    "images",
+    "existingImages",
     "price",
     "categoryId",
     "stock",
   ];
+
+  const { title, description, price, categoryId, stock, existingImages } =
+    req.body;
+
   try {
     const id = parseInt(req.params.id);
 
@@ -179,7 +185,7 @@ export const updateProduct = async (req, res) => {
 
     if (!product) {
       return res.status(404).json({
-        message: "Product not find",
+        message: "Product not found",
       });
     }
 
@@ -189,9 +195,34 @@ export const updateProduct = async (req, res) => {
       });
     }
 
+    const currentImages = JSON.parse(existingImages);
+
+    let updatedImageUrls = [];
+
+    if (req.files && req.files.length > 0) {
+      const uploads = await Promise.all(
+        req.files.map(async (file) => {
+          const cloudRes = await uploadBuffer(file.buffer);
+          return cloudRes.secure_url;
+        }),
+      );
+      updatedImageUrls = [...uploads];
+    }
+
+    updatedImageUrls = [...updatedImageUrls, ...currentImages];
+
     const updatedProduct = await prisma.product.update({
       where: { id },
-      data: req.body,
+      data: {
+        title: title,
+        description: description,
+        images: updatedImageUrls,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        category: {
+          connect: { id: parseInt(categoryId) },
+        },
+      },
     });
 
     res.json({
