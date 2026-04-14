@@ -1,124 +1,200 @@
-# 🛍️ Ecommerce Backend API
+# E-Commerce Backend API
 
-A robust, production-ready backend for an e-commerce platform built with **Node.js**, **Express**, and **PostgreSQL**. This project demonstrates scalable architecture, secure authentication, and complex data relationships.
+Backend API for a portfolio e-commerce project built with Node.js, Express, Prisma, and PostgreSQL. This repository is responsible for authentication, product management, cart operations, order processing, category data, and image uploads.
 
-## ✨ Key Features
+Companion frontend repository: [ecommerce-frontend](https://github.com/ahtashammuzamal/ecommerce-frontend)
 
-- **🔐 Authentication & Security**
-  - Secure User Sign-up & Login using **JWT** (JSON Web Tokens).
-  - Password hashing with **bcrypjs**.
-  - **Role-Based Access Control (RBAC)**: Admin-only routes for product and order management.
+## Portfolio Context
 
-- **📦 Product Management**
-  - Complete CRUD operations for products.
-  - **Image Uploads**: Integrated with **Cloudinary** and **Multer** for handling multiple product images.
-  - Category organization (seeded database).
+This project was built to demonstrate backend engineering skills that are common in production web applications. It highlights the ability to:
 
-- **🛒 Shopping Cart**
-  - Persistent cart management for authenticated users.
-  - Add, update, remove items, and clear cart functionality.
+- Design and manage a relational data model
+- Build REST endpoints for a multi-step commerce workflow
+- Implement authentication and role-based authorization
+- Handle file uploads for product images
+- Use transactions for order creation and cart cleanup
+- Keep the API isolated from the frontend in a separate repository
 
-- **📦 Order Processing**
-  - Order creation from cart contents.
-  - Admin capabilities to update order status (e.g., from 'Pending' to 'Shipped').
+## Core Capabilities
 
-- **🗄️ Database & ORM**
-  - Built on **PostgreSQL** for reliable relational data storage.
-  - Managed via **Prisma ORM** for type-safe database queries and migrations.
+- User registration, login, logout, profile retrieval, and password change
+- JWT-based protected routes
+- Admin-only product creation, update, and deletion
+- Product listing with search, category filtering, price filtering, sorting, and pagination-ready query params
+- Persistent cart creation and cart item management
+- Order creation from cart contents
+- Pending-order cancellation for customers
+- Admin order review with status updates
+- Category retrieval for frontend product filters and forms
+- Product image uploads through Multer and Cloudinary
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Component | Technology | Description |
-| :--- | :--- | :--- |
-| **Runtime** | Node.js | JavaScript runtime environment |
-| **Framework** | Express.js | Fast, unopinionated web framework |
-| **Database** | PostgreSQL | Open source relational database |
-| **ORM** | Prisma | Next-generation Node.js and TypeScript ORM |
-| **Auth** | JWT & Bcrypt | Stateless authentication and security |
-| **Storage** | Cloudinary | Cloud-based image and video management |
+- Node.js
+- Express 5
+- PostgreSQL
+- Prisma ORM
+- JWT
+- bcryptjs
+- Multer
+- Cloudinary
+- dotenv
 
-## � Getting Started
+## Repository Relationship
 
-Follow these steps to set up the project locally.
+This project is intentionally separated into two repositories to reflect a real-world client/server architecture.
 
-### Prerequisites
-- **Node.js**: v16+
-- **PostgreSQL**: Local or cloud instance (e.g., Supabase, Neon)
-- **Cloudinary Account**: For handling image uploads
+- Backend repository: [ecommerce_backend](https://github.com/ahtashammuzamal/ecommerce_backend)
+- Frontend repository: [ecommerce-frontend](https://github.com/ahtashammuzamal/ecommerce-frontend)
+- Default local server URL: `http://localhost:5000`
+- Frontend origin currently allowed by CORS: `http://localhost:5173`
 
-### Installation
+## Data Model Overview
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/ahtashammuzamal/ecommerce_backend.git
-    cd ecommerce_backend
-    ```
+The API is backed by PostgreSQL and Prisma models for:
 
-2.  **Install dependencies**
-    ```bash
-    npm install
-    ```
+- `User`
+- `Product`
+- `Category`
+- `Cart`
+- `CartItem`
+- `Order`
+- `OrderItem`
 
-3.  **Configure Environment Variables**
-    Create a `.env` file in the root directory:
-    ```env
-    # Server
-    PORT=5000
+It also uses role and order-status enums to support authorization and order workflow management.
 
-    # Database (Prisma)
-    DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce_db?schema=public"
+## Getting Started
 
-    # Security
-    JSON_SECRET_KEY="your_super_complex_secret_key"
+### 1. Clone the repository
 
-    # Cloudinary (Image Uploads)
-    CLOUDINARY_CLOUD_NAME="your_cloud_name"
-    CLOUDINARY_API_KEY="your_api_key"
-    CLOUDINARY_API_SECRET="your_api_secret"
-    ```
+```bash
+git clone https://github.com/ahtashammuzamal/ecommerce_backend.git
+cd ecommerce_backend
+```
 
-4.  **Database Migration & Seeding**
-    ```bash
-    npx prisma migrate dev --name init  # Create tables in your DB
-    npm run seed                        # Populate initial categories
-    ```
+### 2. Install dependencies
 
-5.  **Run the Server**
-    ```bash
-    npm run dev
-    ```
-    Server running at: `http://localhost:5000`
+```bash
+npm install
+```
 
-## 📡 API Documentation
+### 3. Configure environment variables
 
-### 👤 Authentication
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/sign-up` | Register a new user | ❌ |
-| `POST` | `/api/auth/login` | Login user & get Token | ❌ |
-| `POST` | `/api/auth/logout` | Logout user | ✅ |
+Create a `.env` file from the example:
 
-### 📦 Products
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/products` | Get all products | ❌ |
-| `GET` | `/api/products/:id` | Get single product details | ❌ |
-| `POST` | `/api/products/create` | Create new product (w/ images) | ✅ (Admin) |
-| `PATCH` | `/api/products/:id` | Update product details | ✅ (Admin) |
-| `DELETE` | `/api/products/:id` | Delete a product | ✅ (Admin) |
+```bash
+cp .env.example .env
+```
 
-### � Cart
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/cart` | Get user's cart | ✅ |
-| `POST` | `/api/cart/add` | Add item to cart | ✅ |
-| `PATCH` | `/api/cart/update` | Update item quantity | ✅ |
-| `DELETE` | `/api/cart/remove` | Remove specific item | ✅ |
-| `POST` | `/api/cart/clear` | Remove all items | ✅ |
+Required environment variables:
 
-### 🚚 Orders
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/orders` | Get user's order history | ✅ |
-| `POST` | `/api/orders/create` | Place a new order | ✅ |
-| `PATCH` | `/api/orders/:orderId/status` | Update order status | ✅ (Admin) |
+```env
+PORT=5000
+DATABASE_URL="postgresql://postgres:password@localhost:5432/ecommerce_db?schema=public"
+DIRECT_URL="postgresql://postgres:password@localhost:5432/ecommerce_db?schema=public"
+JSON_SECRET_KEY="replace-with-a-long-random-secret"
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+CLOUDINARY_API_KEY="your-cloudinary-api-key"
+CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
+```
+
+For Supabase, use two database URLs:
+
+- `DATABASE_URL` for your app runtime. Prefer the Supabase pooler connection string if your environment does not support IPv6.
+- `DIRECT_URL` for Prisma migrations. Use the direct connection string from Supabase when your environment supports IPv6, otherwise use the session pooler string provided by Supabase.
+
+If you are using Supabase connection strings, append `?sslmode=require` unless the copied URL already includes it.
+
+### 4. Run database migrations
+
+```bash
+npx prisma migrate dev
+```
+
+### 5. Seed starter categories
+
+```bash
+npm run seed
+```
+
+### 6. Start the development server
+
+```bash
+npm run dev
+```
+
+The API will be available at `http://localhost:5000`.
+
+## Available Scripts
+
+- `npm run dev` starts the API with Nodemon
+- `npm run seed` seeds starter categories
+
+## API Overview
+
+### Authentication
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/auth/register` | Register a user |
+| `POST` | `/api/auth/login` | Log in and receive a token |
+| `GET` | `/api/auth/my-profile` | Fetch the authenticated user |
+| `POST` | `/api/auth/logout` | Log out the current session |
+| `POST` | `/api/auth/change-password` | Change the current user's password |
+
+### Products
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/products` | List products with filters |
+| `GET` | `/api/products/:id` | Fetch a single product |
+| `POST` | `/api/products/create` | Create a product (admin) |
+| `PATCH` | `/api/products/:id` | Update a product (admin) |
+| `DELETE` | `/api/products/:id` | Delete a product (admin) |
+
+### Cart
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/cart` | Fetch the current user's cart |
+| `POST` | `/api/cart/add` | Add an item to the cart |
+| `PATCH` | `/api/cart/update` | Increment or decrement cart quantity |
+| `DELETE` | `/api/cart/:id` | Remove a cart item |
+| `POST` | `/api/cart/clear` | Clear the cart |
+
+### Orders
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/orders` | Fetch the current user's orders |
+| `POST` | `/api/orders/create` | Create an order from the cart |
+| `PATCH` | `/api/orders/:orderId/cancel` | Cancel a pending order |
+| `GET` | `/api/orders/all` | Fetch all orders (admin) |
+| `PATCH` | `/api/orders/:orderId/status` | Update order status (admin) |
+
+### Categories
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/categories` | Fetch all categories |
+
+## What This Repository Demonstrates
+
+- Secure route protection with token-based authentication
+- Role-based access control for admin operations
+- Relational modeling for products, carts, and orders
+- Query-driven product listing for frontend filtering and sorting
+- Transactional order creation with cart cleanup
+- Media upload handling for product management
+
+## Next Improvements
+
+- Add automated API and integration tests
+- Add request validation middleware for stricter input handling
+- Add deployment, logging, and CI/CD documentation
+
+## Notes
+
+- This repository contains the backend API only.
+- The client application lives in a separate repository linked above.
+- To test the full project locally, run this API together with the frontend repository.

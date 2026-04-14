@@ -88,7 +88,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server error in creating user",
+      message: "Server error in logging in",
       error: error.message,
     });
   }
