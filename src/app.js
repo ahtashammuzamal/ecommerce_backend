@@ -18,7 +18,11 @@ app.use(express.urlencoded({ extended: true }));
 // fix: CORS error on frontend
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://ecommerce-backend-e5lf.onrender.com",
+    ],
     credentials: true,
   }),
 );

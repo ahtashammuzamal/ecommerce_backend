@@ -50,7 +50,7 @@ This project was built to demonstrate backend engineering skills that are common
 
 This project is intentionally separated into two repositories to reflect a real-world client/server architecture.
 
-- Backend repository: [ecommerce_backend](https://github.com/ahtashammuzamal/ecommerce_backend)
+- Backend repository: [ecommerce-backend](https://github.com/ahtashammuzamal/ecommerce-backend)
 - Frontend repository: [ecommerce-frontend](https://github.com/ahtashammuzamal/ecommerce-frontend)
 - Default local server URL: `http://localhost:5000`
 - Frontend origin currently allowed by CORS: `http://localhost:5173`
@@ -83,8 +83,8 @@ This project uses Supabase as the hosted PostgreSQL provider.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ahtashammuzamal/ecommerce_backend.git
-cd ecommerce_backend
+git clone https://github.com/ahtashammuzamal/ecommerce-backend.git
+cd ecommerce-backend
 ```
 
 ### 2. Install dependencies
