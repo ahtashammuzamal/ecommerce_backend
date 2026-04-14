@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  cancelUserOrder,
   createOrder,
   getAllOrders,
   getOrders,
@@ -11,14 +12,15 @@ const router = express.Router();
 
 router.get("/", verifyToken, getOrders);
 router.post("/create", verifyToken, createOrder);
+router.patch("/:orderId/cancel", verifyToken, cancelUserOrder);
+
+// admin routes
 router.patch(
   "/:orderId/status",
   verifyToken,
   authorizeAdmin,
   updateOrderStatus,
 );
-
-// admin routes
 router.get("/all", verifyToken, authorizeAdmin, getAllOrders);
 
 export default router;

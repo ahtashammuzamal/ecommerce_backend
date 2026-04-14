@@ -138,3 +138,29 @@ export const getProfile = async (req, res) => {
     });
   }
 };
+
+export const changeUserPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+    });
+
+    if (await compareHash(currentPassword, user.password)) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: await hashPassword(newPassword) },
+      });
+    }
+
+    res.json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error in updating password",
+      error: error.message,
+    });
+  }
+};

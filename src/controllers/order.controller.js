@@ -83,6 +83,7 @@ export const getOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       where: { userId: req.user.id },
+      orderBy: { id: "desc" },
       include: {
         orderItems: {
           include: { product: true },
@@ -103,7 +104,9 @@ export const getOrders = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const [orders, totalOrders, statusCounts] = await prisma.$transaction([
-      prisma.order.findMany({ include: { user: true } }),
+      prisma.order.findMany({
+        include: { orderItems: { include: { product: true } } },
+      }),
 
       prisma.order.count(),
 
@@ -159,9 +162,9 @@ export const updateOrderStatus = async (req, res) => {
     // checking status transition
 
     const allowedTransitions = {
-      PENDING: [STATUS.PAID, STATUS.CANCELLED],
-      PAID: [STATUS.SHIPPED],
-      SHIPPED: [STATUS.DELIVERED],
+      PENDING: [STATUS.SHIPPED, STATUS.CANCELLED],
+      SHIPPED: [STATUS.PAID, STATUS.CANCELLED],
+      PAID: [STATUS.DELIVERED],
       DELIVERED: [],
       CANCELLED: [],
     };
@@ -222,5 +225,31 @@ export const updateOrderStatus = async (req, res) => {
       message: "Failed to update order status",
       error: error.message,
     });
+  }
+};
+
+export const cancelUserOrder = async (req, res) => {
+  try {
+    const orderId = Number(req.params.orderId);
+
+    if (!orderId) {
+      return res.status(400).json({
+        message: "Invalid order id.",
+      });
+    }
+
+    const order = await prisma.order.update({
+      where: { id: orderId, userId: req.user.id, status: "PENDING" },
+      data: { status: "CANCELLED" },
+    });
+
+    res.json({
+      message: "Order status updated successfully",
+    });
+  } catch (error) {
+    if (error.code === "P2025") {
+      return res.status(400).json({ message: "Invalid update" });
+    }
+    throw error;
   }
 };

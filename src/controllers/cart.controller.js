@@ -5,20 +5,27 @@ export const getCart = async (req, res) => {
     const cart = await prisma.cart.findUnique({
       where: { userId: req.user.id },
       include: {
-        cartItems: { include: { product: { include: { category: true } } } },
+        cartItems: {
+          orderBy: {
+            id: "asc",
+          },
+          include: { product: { include: { category: true } } },
+        },
       },
     });
+
+    if (!cart) {
+      return res.status(200).json({
+        success: false,
+        totalCartItems: 0,
+        message: "Cart does not exist",
+      });
+    }
 
     let totalCartItems = 0;
     cart.cartItems.forEach((item) => {
       totalCartItems += item.quantity;
     });
-
-    if (!cart) {
-      return res.status(404).json({
-        message: "Cart does not exist",
-      });
-    }
 
     res.status(200).json({
       success: true,
@@ -50,7 +57,7 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    const {productId, quantity } = req.body;
+    const { productId, quantity } = req.body;
 
     if (!productId || !quantity || quantity < 1) {
       return res.status(400).json({
@@ -129,7 +136,7 @@ export const updateCart = async (req, res) => {
 
     if (!id || !action) {
       return res.status(400).json({
-        message: "cartItem_id and action is required",
+        message: "cartItem id and action is required",
       });
     }
 
