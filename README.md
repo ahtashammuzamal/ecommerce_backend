@@ -52,8 +52,10 @@ This project is intentionally separated into two repositories to reflect a real-
 
 - Backend repository: [ecommerce-backend](https://github.com/ahtashammuzamal/ecommerce-backend)
 - Frontend repository: [ecommerce-frontend](https://github.com/ahtashammuzamal/ecommerce-frontend)
+- **Live Demo (Frontend):** [https://atelier-goods.vercel.app/](https://atelier-goods.vercel.app/)
+- **Live API (Backend):** [https://ecommerce-backend-e5lf.onrender.com/api](https://ecommerce-backend-e5lf.onrender.com/api)
 - Default local server URL: `http://localhost:5000`
-- Frontend origin currently allowed by CORS: `http://localhost:5173`
+- Frontend origin currently allowed by CORS: `http://localhost:5173` and `https://atelier-goods.vercel.app`
 
 ## Data Model Overview
 
@@ -158,49 +160,55 @@ The API will be available at `http://localhost:5000`.
 
 ### Authentication
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/auth/register` | Register a user |
-| `POST` | `/api/auth/login` | Log in and receive a token |
-| `GET` | `/api/auth/my-profile` | Fetch the authenticated user |
-| `POST` | `/api/auth/logout` | Log out the current session |
+| Method | Endpoint                    | Description                        |
+| ------ | --------------------------- | ---------------------------------- |
+| `POST` | `/api/auth/register`        | Register a user                    |
+| `POST` | `/api/auth/login`           | Log in and receive a token         |
+| `GET`  | `/api/auth/my-profile`      | Fetch the authenticated user       |
+| `POST` | `/api/auth/logout`          | Log out the current session        |
 | `POST` | `/api/auth/change-password` | Change the current user's password |
 
 ### Products
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/api/products` | List products with filters |
-| `GET` | `/api/products/:id` | Fetch a single product |
-| `POST` | `/api/products/create` | Create a product (admin) |
-| `PATCH` | `/api/products/:id` | Update a product (admin) |
-| `DELETE` | `/api/products/:id` | Delete a product (admin) |
+| Method   | Endpoint               | Description                |
+| -------- | ---------------------- | -------------------------- |
+| `GET`    | `/api/products`        | List products with filters |
+| `GET`    | `/api/products/:id`    | Fetch a single product     |
+| `POST`   | `/api/products/create` | Create a product (admin)   |
+| `PATCH`  | `/api/products/:id`    | Update a product (admin)   |
+| `DELETE` | `/api/products/:id`    | Delete a product (admin)   |
 
 ### Cart
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/api/cart` | Fetch the current user's cart |
-| `POST` | `/api/cart/add` | Add an item to the cart |
-| `PATCH` | `/api/cart/update` | Increment or decrement cart quantity |
-| `DELETE` | `/api/cart/:id` | Remove a cart item |
-| `POST` | `/api/cart/clear` | Clear the cart |
+| Method   | Endpoint           | Description                          |
+| -------- | ------------------ | ------------------------------------ |
+| `GET`    | `/api/cart`        | Fetch the current user's cart        |
+| `POST`   | `/api/cart/add`    | Add an item to the cart              |
+| `PATCH`  | `/api/cart/update` | Increment or decrement cart quantity |
+| `DELETE` | `/api/cart/:id`    | Remove a cart item                   |
+| `POST`   | `/api/cart/clear`  | Clear the cart                       |
 
 ### Orders
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/api/orders` | Fetch the current user's orders |
-| `POST` | `/api/orders/create` | Create an order from the cart |
-| `PATCH` | `/api/orders/:orderId/cancel` | Cancel a pending order |
-| `GET` | `/api/orders/all` | Fetch all orders (admin) |
-| `PATCH` | `/api/orders/:orderId/status` | Update order status (admin) |
+| Method  | Endpoint                      | Description                     |
+| ------- | ----------------------------- | ------------------------------- |
+| `GET`   | `/api/orders`                 | Fetch the current user's orders |
+| `POST`  | `/api/orders/create`          | Create an order from the cart   |
+| `PATCH` | `/api/orders/:orderId/cancel` | Cancel a pending order          |
+| `GET`   | `/api/orders/all`             | Fetch all orders (admin)        |
+| `PATCH` | `/api/orders/:orderId/status` | Update order status (admin)     |
 
 ### Categories
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/api/categories` | Fetch all categories |
+| Method | Endpoint          | Description          |
+| ------ | ----------------- | -------------------- |
+| `GET`  | `/api/categories` | Fetch all categories |
+
+## Deployment
+
+The API is deployed on **Render**.
+
+- **API Base URL:** `https://ecommerce-backend-e5lf.onrender.com/api`
 
 ## What This Repository Demonstrates
 
